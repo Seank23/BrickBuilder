@@ -27,12 +27,11 @@ private:
 	bool m_FirstMouse = true;
 
 	std::unique_ptr<DX12Engine::Camera> m_Camera;
-	std::unique_ptr<DX12Engine::Renderer> m_Renderer;
 	std::unique_ptr<DX12Engine::LightBuffer> m_LightBuffer;
+
+	std::unique_ptr<DX12Engine::Renderer> m_Renderer;
 	DX12Engine::RenderPipeline m_RenderPipeline;
 
 	DX12Engine::GameObjectContainer m_SceneObjects;
-
-	DX12Engine::PhysicsEngine m_PhysicsEngine;
 };
 
