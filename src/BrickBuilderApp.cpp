@@ -1,40 +1,33 @@
-#include "ClientApplication.h"
+#include "BrickBuilderApp.h"
 #include <windowsx.h>
 
 #include "DX12Engine/Resources/Shader.h"
 #include "DX12Engine/IO/ModelLoader.h"
 #include "DX12Engine/Resources/Mesh.h"
 #include "DX12Engine/Entity/RenderComponent.h"
-#include "DX12Engine/Entity/PhysicsComponent.h"
 #include "DX12Engine/IO/TextureLoader.h"
 #include "DX12Engine/Resources/Texture.h"
 #include "DX12Engine/Rendering/GPUUploader.h"
-#include "DX12Engine/Resources/Materials/BasicMaterial.h"
 #include "DX12Engine/Resources/Materials/PBRMaterial.h"
-#include "DX12Engine/Rendering/PipelineStateBuilder.h"
-#include "DX12Engine/Rendering/RootSignatureBuilder.h"
 #include "DX12Engine/Resources/Light.h"
-#include "DX12Engine/Resources/RenderTexture.h"
 #include "DX12Engine/Resources/ResourceManager.h"
-#include "DX12Engine/Rendering/RenderPass/ShadowMapRenderPass.h"
-#include "DX12Engine/Rendering/RenderPass/GeometryRenderPass.h"
-#include "DX12Engine/Rendering/RenderPass/LightingRenderPass.h"
+#include "DX12Engine/Rendering/RenderPass/RenderPass.h"
 #include "DX12Engine/Rendering/RenderPipelineConfig.h"
 
-ClientApplication::ClientApplication()
+BrickBuilder::BrickBuilder()
 	: Application()
 {
 }
 
-ClientApplication::~ClientApplication()
+BrickBuilder::~BrickBuilder()
 {
 }
 
-void ClientApplication::Init(std::shared_ptr<DX12Engine::RenderContext> renderContext, DirectX::XMFLOAT2 windowSize)
+void BrickBuilder::Init(std::shared_ptr<DX12Engine::RenderContext> renderContext, DirectX::XMFLOAT2 windowSize)
 {
 	m_RenderContext = renderContext;
 	m_Renderer = std::make_unique<DX12Engine::Renderer>(m_RenderContext);
-	DX12Engine::ResourceManager::GetInstance().AddShader("UIGrid_PS", DX12Engine::ResourceManager::GetShaderPath("UIGrid_PS.hlsl"), "pixel");
+	DX12Engine::ResourceManager::GetInstance().AddShader("UIGrid_PS", DX12Engine::ResourceManager::GetShaderPath("UIGrid_PS.hlsl"), DX12Engine::ShaderType::Pixel);
 
 	m_Camera = std::make_unique<DX12Engine::Camera>(windowSize.x / windowSize.y, 0.1f, 100.0f);
 	m_Camera->SetPosition({ -5.0f, 1.0f, 3.0f });
@@ -108,8 +101,10 @@ void ClientApplication::Init(std::shared_ptr<DX12Engine::RenderContext> renderCo
 	lightingConfig.InputResources[DX12Engine::InputResourceType::RenderTargets_CubeShadowMap] = &cubeShadowBufferTypes;
 
 	std::vector<DX12Engine::RenderTargetType> uiLightingTypes{ DX12Engine::RenderTargetType::Composite };
+	std::string gridShader = "UIGrid_PS";
 	DX12Engine::RenderPassConfig uiConfig;
 	uiConfig.Type = DX12Engine::RenderPassType::UI;
+	uiConfig.InputResources[DX12Engine::InputResourceType::PixelShader] = &gridShader;
 	uiConfig.InputResources[DX12Engine::InputResourceType::Camera] = m_Camera.get();
 	uiConfig.InputResources[DX12Engine::InputResourceType::RenderTargets_Geometry] = &uiGBufferTypes;
 	uiConfig.InputResources[DX12Engine::InputResourceType::RenderTargets_Lighting] = &uiLightingTypes;
@@ -120,7 +115,7 @@ void ClientApplication::Init(std::shared_ptr<DX12Engine::RenderContext> renderCo
 	m_RenderPipeline = m_Renderer->CreateRenderPipeline(pipelineConfig);
 }
 
-void ClientApplication::Update(float ts, float elapsed)
+void BrickBuilder::Update(float ts, float elapsed)
 {
 	m_Camera->ProcessKeyboardInput(ts);
 
@@ -130,7 +125,7 @@ void ClientApplication::Update(float ts, float elapsed)
 	m_Renderer->ExecutePipeline(m_RenderPipeline);
 }
 
-void ClientApplication::HandleMouseMovement(HWND hwnd, LPARAM lParam)
+void BrickBuilder::HandleMouseMovement(HWND hwnd, LPARAM lParam)
 {
 	int mouseX = GET_X_LPARAM(lParam);
 	int mouseY = GET_Y_LPARAM(lParam);

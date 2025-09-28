@@ -9,12 +9,12 @@
 #include "DX12Engine/Entity/GameObject.h"
 #include "DX12Engine/Physics/PhysicsEngine.h"
 
-class ClientApplication : public DX12Engine::Application
+class BrickBuilder : public DX12Engine::Application
 {
 
 public:
-	ClientApplication();
-	~ClientApplication();
+	BrickBuilder();
+	~BrickBuilder();
 
 	virtual void Init(std::shared_ptr<DX12Engine::RenderContext> renderContext, DirectX::XMFLOAT2 windowSize) override;
 	virtual void Update(float ts, float elapsed) override;
