@@ -16,5 +16,10 @@ namespace BrickBuilder
 		virtual void ProcessInput(float deltaTime) override;
 		virtual void HandleMouseMovement(HWND hwnd, LPARAM lParam) override;
 		virtual void HandleMouseClick(HWND hwnd, LPARAM lParam) override;
+
+		void SetWindowSize(DirectX::XMFLOAT2 size) { m_WindowSize = size; }
+
+	private:
+		DirectX::XMFLOAT2 m_WindowSize;
 	};
 }

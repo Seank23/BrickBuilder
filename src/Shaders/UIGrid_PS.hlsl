@@ -36,7 +36,7 @@ float4 DrawGrid(PSInput input)
     
     float3 hitPoint = rayOrigin + rayDir * t;
     
-    float gridSpacing = 2.0f;
+    float gridSpacing = 1.0f;
     float thickness = 0.02f;
     
     float2 coords = hitPoint.xz / gridSpacing;

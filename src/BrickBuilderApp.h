@@ -2,13 +2,10 @@
 #include <memory>
 
 #include "./DX12Engine/Application.h"
-#include "./DX12Engine/Input/Camera.h"
-#include "DX12Engine/Rendering/Buffers/LightBuffer.h"
 #include "DX12Engine/Rendering/Renderer.h"
 #include "DX12Engine/Rendering/RenderContext.h"
-#include "DX12Engine/Entity/GameObject.h"
 #include "DX12Engine/Physics/PhysicsEngine.h"
-#include "Input/InputHandler.h"
+#include "Game/GameContext.h"
 
 namespace BrickBuilder
 {
@@ -27,15 +24,10 @@ namespace BrickBuilder
 	private:
 		void OnResize(DirectX::XMFLOAT2 newSize);
 
-		std::unique_ptr<InputHandler> m_InputHandler;
-
-		std::unique_ptr<DX12Engine::Camera> m_Camera;
-		std::unique_ptr<DX12Engine::LightBuffer> m_LightBuffer;
+		std::unique_ptr<GameContext> m_GameContext;
 
 		std::unique_ptr<DX12Engine::Renderer> m_Renderer;
 		DX12Engine::RenderPipeline m_RenderPipeline;
-
-		DX12Engine::GameObjectContainer m_SceneObjects;
 	};
 }
 
