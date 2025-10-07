@@ -1,16 +1,23 @@
 #include "SandboxScene.h"
 
 #include "DX12Engine/IO/ModelLoader.h"
-#include "DX12Engine/Resources/Mesh.h"
 #include "DX12Engine/Entity/RenderComponent.h"
 #include "DX12Engine/IO/TextureLoader.h"
 #include "DX12Engine/Resources/Texture.h"
 #include "DX12Engine/Rendering/GPUUploader.h"
-#include "DX12Engine/Resources/Materials/PBRMaterial.h"
 #include <DX12Engine/Resources/ResourceManager.h>
 
 namespace BrickBuilder
 {
+	SandboxScene::SandboxScene()
+		: BrickBuilderScene()
+	{
+	}
+
+	SandboxScene::~SandboxScene()
+	{
+	}
+
 	void SandboxScene::Init()
 	{
 		m_Camera = std::make_unique<DX12Engine::Camera>(16.0f / 9.0f, 0.1f, 100.0f);
@@ -32,21 +39,30 @@ namespace BrickBuilder
 		auto brickTextures = textureLoader.LoadMaterial(DX12Engine::ResourceManager::GetMaterialPath("dark-worn-stone-ue"));
 		std::shared_ptr<DX12Engine::PBRMaterial> cubeMat = std::make_shared<DX12Engine::PBRMaterial>();
 		cubeMat->SetAllTextures(brickTextures);
+		m_BrickMaterials["Cube"] = cubeMat;
 
 		DX12Engine::ModelLoader modelLoader;
 		DX12Engine::Mesh cubeMesh = modelLoader.LoadObj(DX12Engine::ResourceManager::GetModelPath("cube.obj"));
+		m_BrickMeshes["Cube"] = std::make_shared<DX12Engine::Mesh>(cubeMesh);
 
-		std::shared_ptr<DX12Engine::GameObject> cube = std::make_shared<DX12Engine::GameObject>();
-		cube->SetMesh(cubeMesh);
-		cube->Move({ 0.0f, 1.0f, 0.0f });
-		DX12Engine::RenderComponent* cubeRenderComp = cube->CreateComponent<DX12Engine::RenderComponent>();
-		cubeRenderComp->SetMaterial(cubeMat);
-		m_SceneObjects.Add("Cube", cube);
+		SpawnBrick({ 0.0f, 0.0f, 0.0f });
 	}
 
 	void SandboxScene::Update(float ts, float elapsed)
 	{
 		m_Camera->Update(ts);
 		m_SceneObjects.Update(ts, elapsed);
+	}
+
+	void SandboxScene::SpawnBrick(DirectX::XMVECTOR position)
+	{
+		std::shared_ptr<DX12Engine::GameObject> cube = std::make_shared<DX12Engine::GameObject>();
+		cube->SetMesh(m_BrickMeshes["Cube"]);
+		cube->Move(position);
+		cube->Move({ 0.0f, 1.0f, 0.0f });
+		DX12Engine::RenderComponent* cubeRenderComp = cube->CreateComponent<DX12Engine::RenderComponent>();
+		cubeRenderComp->SetMaterial(m_BrickMaterials["Cube"]);
+		m_SceneObjects.Add("Cube_" + m_BrickCount, cube);
+		m_BrickCount++;
 	}
 }

@@ -13,13 +13,15 @@ namespace BrickBuilder
 	{
 	}
 
-	void GameContext::Init()
+	void GameContext::Init(DirectX::XMFLOAT2 windowSize)
 	{
 		m_Scene = std::make_unique<SandboxScene>();
 		m_Scene->Init();
 
-		m_InputHandler = std::make_unique<InputHandler>();
+		m_InputHandler = std::make_unique<InputHandler>(*this);
 		m_InputHandler->SetCamera(m_Scene->GetCamera());
+
+		OnResize(windowSize);
 	}
 
 	void GameContext::Update(float ts, float elapsed)

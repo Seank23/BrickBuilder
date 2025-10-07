@@ -6,11 +6,12 @@
 namespace BrickBuilder
 {
 	class Camera;
+	class GameContext;
 
 	class InputHandler : public DX12Engine::InputHandler
 	{
 	public:
-		InputHandler();
+		InputHandler(GameContext& context);
 		~InputHandler();
 
 		virtual void ProcessInput(float deltaTime) override;
@@ -20,6 +21,9 @@ namespace BrickBuilder
 		void SetWindowSize(DirectX::XMFLOAT2 size) { m_WindowSize = size; }
 
 	private:
+		void ProcessMouseClick(DX12Engine::InputCommand command, DirectX::XMVECTOR worldPosition);
+
 		DirectX::XMFLOAT2 m_WindowSize;
+		GameContext& m_GameContext;
 	};
 }

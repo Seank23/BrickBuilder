@@ -32,7 +32,7 @@ namespace BrickBuilder
 		DX12Engine::ResourceManager::GetInstance().AddShader("UIGrid_PS", DX12Engine::ResourceManager::GetShaderPath("UIGrid_PS.hlsl"), DX12Engine::ShaderType::Pixel);
 
 		m_GameContext = std::make_unique<GameContext>();
-		m_GameContext->Init();
+		m_GameContext->Init(windowSize);
 
 		DX12Engine::RenderPipelineConfig pipelineConfig;
 		DX12Engine::RenderPassConfig geometryConfig;

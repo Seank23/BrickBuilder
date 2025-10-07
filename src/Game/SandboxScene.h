@@ -1,17 +1,17 @@
 #pragma once
-#include "DX12Engine/Entity/Scene.h"
+#include "./BrickBuilderScene.h"
 
 namespace BrickBuilder
 {
-	class SandboxScene : public DX12Engine::Scene
+	class SandboxScene : public BrickBuilderScene
 	{
 	public:
-		SandboxScene() = default;
-		~SandboxScene() = default;
+		SandboxScene();
+		~SandboxScene();
 
-		virtual void Init();
-		virtual void Update(float ts, float elapsed);
+		virtual void Init() override;
+		virtual void Update(float ts, float elapsed) override;
 
-	private:
+		virtual void SpawnBrick(DirectX::XMVECTOR position) override;
 	};
 }

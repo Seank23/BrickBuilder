@@ -3,11 +3,13 @@
 #include <cstdio>
 #include "DirectXMath.h"
 #include "DX12Engine/Input/InputController.h"
+#include "../Game/GameContext.h"
+#include "../Game/SandboxScene.h"
 
 namespace BrickBuilder
 {
-	InputHandler::InputHandler()
-		: DX12Engine::InputHandler()
+	InputHandler::InputHandler(GameContext& context)
+		: DX12Engine::InputHandler(), m_GameContext(context)
 	{
 		m_CommandMap = {
 			{ DX12Engine::InputCommand::MoveForward,  VK_UP },
@@ -54,5 +56,23 @@ namespace BrickBuilder
 			DirectX::XMVectorGetX(intersectPoint),
 			DirectX::XMVectorGetY(intersectPoint),
 			DirectX::XMVectorGetZ(intersectPoint));
+
+		for (const auto& [command, key] : m_CommandMap)
+		{
+			if (DX12Engine::InputController::IsKeyPressed(key))
+			{
+				ProcessMouseClick(command, intersectPoint);
+			}
+		}
+	}
+
+	void InputHandler::ProcessMouseClick(DX12Engine::InputCommand command, DirectX::XMVECTOR worldPosition)
+	{
+		switch (command)
+		{
+		case DX12Engine::InputCommand::Interact:
+			m_GameContext.GetScene()->SpawnBrick(worldPosition);
+			break;
+		}
 	}
 }
