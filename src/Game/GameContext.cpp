@@ -15,7 +15,7 @@ namespace BrickBuilder
 
 	void GameContext::Init(DirectX::XMFLOAT2 windowSize)
 	{
-		m_Scene = std::make_unique<SandboxScene>();
+		m_Scene = std::make_unique<SandboxScene>(*this);
 		m_Scene->Init();
 
 		m_InputHandler = std::make_unique<InputHandler>(*this);

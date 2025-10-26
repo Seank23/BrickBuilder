@@ -6,7 +6,7 @@ namespace BrickBuilder
 	class SandboxScene : public BrickBuilderScene
 	{
 	public:
-		SandboxScene();
+		SandboxScene(GameContext& context);
 		~SandboxScene();
 
 		virtual void Init() override;

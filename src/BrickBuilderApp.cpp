@@ -79,6 +79,7 @@ namespace BrickBuilder
 		m_RenderPipeline = m_Renderer->CreateRenderPipeline(pipelineConfig);
 
 		m_Renderer->SetCurrentScene(m_GameContext->GetScene());
+		m_RenderPipeline.GetRenderPass(DX12Engine::RenderPassType::UI)->AddConstantBuffer({ m_GameContext->GetScene()->GetGrid()->GetConstantBuffer() });
 	}
 
 	void BrickBuilder::Update(float ts, float elapsed)

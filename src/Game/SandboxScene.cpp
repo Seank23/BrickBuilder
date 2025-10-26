@@ -6,11 +6,12 @@
 #include "DX12Engine/Resources/Texture.h"
 #include "DX12Engine/Rendering/GPUUploader.h"
 #include <DX12Engine/Resources/ResourceManager.h>
+#include "GameContext.h"
 
 namespace BrickBuilder
 {
-	SandboxScene::SandboxScene()
-		: BrickBuilderScene()
+	SandboxScene::SandboxScene(GameContext& context)
+		: BrickBuilderScene(context)
 	{
 	}
 
@@ -21,8 +22,10 @@ namespace BrickBuilder
 	void SandboxScene::Init()
 	{
 		m_Camera = std::make_unique<DX12Engine::Camera>(16.0f / 9.0f, 0.1f, 100.0f);
-		m_Camera->SetPosition({ -5.0f, 1.0f, 3.0f });
+		m_Camera->SetPosition({ -10.0f, 2.0f, 6.0f });
 		m_Camera->SetRotation(0.0f, -30.0f);
+
+		m_Grid->SetCellSize(2.0f);
 
 		m_LightBuffer = std::make_unique<DX12Engine::LightBuffer>();
 		std::shared_ptr<DX12Engine::Light> sunLight = std::make_shared<DX12Engine::Light>();
@@ -56,13 +59,13 @@ namespace BrickBuilder
 
 	void SandboxScene::SpawnBrick(DirectX::XMVECTOR position)
 	{
-		std::shared_ptr<DX12Engine::GameObject> cube = std::make_shared<DX12Engine::GameObject>();
+		std::unique_ptr<DX12Engine::GameObject> cube = std::make_unique<DX12Engine::GameObject>();
 		cube->SetMesh(m_BrickMeshes["Cube"]);
-		cube->Move(position);
+		cube->Move(m_Grid->AlignToGrid(position));
 		cube->Move({ 0.0f, 1.0f, 0.0f });
 		DX12Engine::RenderComponent* cubeRenderComp = cube->CreateComponent<DX12Engine::RenderComponent>();
 		cubeRenderComp->SetMaterial(m_BrickMaterials["Cube"]);
-		m_SceneObjects.Add("Cube_" + m_BrickCount, cube);
+		m_SceneObjects.Add("Cube_" + std::to_string(m_BrickCount), std::move(cube));
 		m_BrickCount++;
 	}
 }

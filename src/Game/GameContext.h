@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "./BrickBuilderScene.h"
+#include <DirectXMath.h>
 
 namespace BrickBuilder
 {

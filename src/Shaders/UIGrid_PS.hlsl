@@ -14,6 +14,16 @@ cbuffer ScreenBuffer : register(b0)
     float2 ScreenSize;
 };
 
+cbuffer GridConfig : register(b1)
+{
+    float3 Origin;
+    float CellSize;
+    float LineThickness;
+    float3 BaseColor;
+    float3 LineColor;
+    float Opacity;
+};
+
 Texture2D depthMap : register(t0);
 Texture2D sceneMap : register(t1);
 SamplerState samp : register(s0);
@@ -36,24 +46,18 @@ float4 DrawGrid(PSInput input)
     
     float3 hitPoint = rayOrigin + rayDir * t;
     
-    float gridSpacing = 1.0f;
-    float thickness = 0.02f;
-    
-    float2 coords = hitPoint.xz / gridSpacing;
-    float2 fracCoords = frac(coords);
+    float2 coords = hitPoint.xz / CellSize;
+    float2 fracCoords = frac(Origin.xz + coords);
     
     float lineX = min(fracCoords.x, 1.0f - fracCoords.x);
     float lineZ = min(fracCoords.y, 1.0f - fracCoords.y);
-    float gridLine = step(lineX, thickness) + step(lineZ, thickness);
+    float gridLine = step(lineX, LineThickness) + step(lineZ, LineThickness);
     
-    float3 baseColor = float3(0.7f, 0.7f, 0.7f);
-    float3 lineColor = float3(1.0f, 1.0f, 1.0f);
-    
-    float3 gridColor = lerp(baseColor, lineColor, saturate(gridLine));
+    float3 gridColor = lerp(BaseColor, LineColor, saturate(gridLine));
     
     float dist = distance(rayOrigin.xz, hitPoint.xz);
     float a = saturate(1.0f - dist / 100.0f);
-    return float4(gridColor, a * 0.6);
+    return float4(gridColor, a * Opacity);
 }
 
 float4 main(PSInput input) : SV_TARGET
