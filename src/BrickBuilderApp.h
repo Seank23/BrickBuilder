@@ -19,7 +19,7 @@ namespace BrickBuilder
 		virtual void Init(std::shared_ptr<DX12Engine::RenderContext> renderContext, DirectX::XMFLOAT2 windowSize) override;
 		virtual void Update(float ts, float elapsed) override;
 
-		virtual void HandleWindowEvent(HWND hwnd, UINT uMsg, LPARAM lParam) override;
+		virtual void HandleWindowEvent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
 	private:
 		void OnResize(DirectX::XMFLOAT2 newSize);

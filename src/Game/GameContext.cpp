@@ -30,7 +30,7 @@ namespace BrickBuilder
 		m_Scene->Update(ts, elapsed);
 	}
 
-	void GameContext::HandleWindowEvent(HWND hwnd, UINT uMsg, LPARAM lParam)
+	void GameContext::HandleWindowEvent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		if (this == nullptr) return;
 		switch (uMsg)
@@ -46,6 +46,36 @@ namespace BrickBuilder
 		case WM_MBUTTONDOWN:
 			m_InputHandler->HandleMouseClick(hwnd, lParam);
 			break;
+		case WM_MOUSEWHEEL:
+			m_InputHandler->HandleMouseWheel(hwnd, wParam);
+		}
+	}
+
+	void GameContext::LoadMesh(const std::string& meshName, std::shared_ptr<DX12Engine::Mesh> mesh)
+	{
+		m_BrickMeshes[meshName] = mesh;
+		m_MeshIterator = m_BrickMeshes.begin();
+	}
+
+	void GameContext::LoadMaterial(const std::string& materialName, std::shared_ptr<DX12Engine::PBRMaterial> material)
+	{
+		m_BrickMaterials[materialName] = material;
+		m_MaterialIterator = m_BrickMaterials.begin();
+	}
+
+	void GameContext::CycleMaterial(bool forward)
+	{
+		if (forward)
+		{
+			m_MaterialIterator++;
+			if (m_MaterialIterator == m_BrickMaterials.end())
+				m_MaterialIterator = m_BrickMaterials.begin();
+		}
+		else
+		{
+			if (m_MaterialIterator == m_BrickMaterials.begin())
+				m_MaterialIterator = m_BrickMaterials.end();
+			m_MaterialIterator--;
 		}
 	}
 

@@ -20,6 +20,7 @@ namespace BrickBuilder
 			{ DX12Engine::InputCommand::MoveDown,     VK_RCONTROL },
 			{ DX12Engine::InputCommand::Pan,		  VK_RBUTTON },
 			{ DX12Engine::InputCommand::Interact,	  VK_LBUTTON },
+			{ DX12Engine::InputCommand::Scroll,		  VK_SCROLL },
 		};
 	}
 
@@ -66,12 +67,28 @@ namespace BrickBuilder
 		}
 	}
 
+	void InputHandler::HandleMouseWheel(HWND hwnd, WPARAM wParam)
+	{
+		float zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+		ProcessMouseWheel(DX12Engine::InputCommand::Scroll, zDelta);
+	}
+
 	void InputHandler::ProcessMouseClick(DX12Engine::InputCommand command, DirectX::XMVECTOR worldPosition)
 	{
 		switch (command)
 		{
 		case DX12Engine::InputCommand::Interact:
 			m_GameContext.GetScene()->SpawnBrick(worldPosition);
+			break;
+		}
+	}
+
+	void InputHandler::ProcessMouseWheel(DX12Engine::InputCommand command, float wheelDelta)
+	{
+		switch (command)
+		{
+		case DX12Engine::InputCommand::Scroll:
+			m_GameContext.CycleMaterial(wheelDelta > 0);
 			break;
 		}
 	}

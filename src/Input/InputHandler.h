@@ -17,11 +17,13 @@ namespace BrickBuilder
 		virtual void ProcessInput(float deltaTime) override;
 		virtual void HandleMouseMovement(HWND hwnd, LPARAM lParam) override;
 		virtual void HandleMouseClick(HWND hwnd, LPARAM lParam) override;
+		virtual void HandleMouseWheel(HWND hwnd, WPARAM wParam) override;
 
 		void SetWindowSize(DirectX::XMFLOAT2 size) { m_WindowSize = size; }
 
 	private:
 		void ProcessMouseClick(DX12Engine::InputCommand command, DirectX::XMVECTOR worldPosition);
+		void ProcessMouseWheel(DX12Engine::InputCommand command, float wheelDelta);
 
 		DirectX::XMFLOAT2 m_WindowSize;
 		GameContext& m_GameContext;

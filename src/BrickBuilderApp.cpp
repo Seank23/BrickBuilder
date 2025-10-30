@@ -88,7 +88,7 @@ namespace BrickBuilder
 		m_Renderer->ExecutePipeline(m_RenderPipeline);
 	}
 
-	void BrickBuilder::HandleWindowEvent(HWND hwnd, UINT uMsg, LPARAM lParam)
+	void BrickBuilder::HandleWindowEvent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		if (this == nullptr) return;
 		switch (uMsg)
@@ -97,7 +97,7 @@ namespace BrickBuilder
 			OnResize({ (float)LOWORD(lParam), (float)HIWORD(lParam) });
 			break;
 		}
-		m_GameContext->HandleWindowEvent(hwnd, uMsg, lParam);
+		m_GameContext->HandleWindowEvent(hwnd, uMsg, wParam, lParam);
 	}
 
 	void BrickBuilder::OnResize(DirectX::XMFLOAT2 newSize)

@@ -39,14 +39,25 @@ namespace BrickBuilder
 		m_SkyboxCubemap = textureLoader.LoadCubemapDDS(DX12Engine::ResourceManager::GetMaterialPath("skybox/skybox2_cubemap.dds"));
 		m_SkyboxIrradiance = textureLoader.LoadCubemapDDS(DX12Engine::ResourceManager::GetMaterialPath("skybox/skybox2_irradiance.dds"));
 
-		auto brickTextures = textureLoader.LoadMaterial(DX12Engine::ResourceManager::GetMaterialPath("dark-worn-stone-ue"));
-		std::shared_ptr<DX12Engine::PBRMaterial> cubeMat = std::make_shared<DX12Engine::PBRMaterial>();
-		cubeMat->SetAllTextures(brickTextures);
-		m_BrickMaterials["Cube"] = cubeMat;
+		std::shared_ptr<DX12Engine::PBRMaterial> brickMat = std::make_shared<DX12Engine::PBRMaterial>();
+		brickMat->SetAllTextures(textureLoader.LoadMaterial(DX12Engine::ResourceManager::GetMaterialPath("dark-worn-stone-ue")));
+		m_GameContext.LoadMaterial("Brick", brickMat);
+
+		std::shared_ptr<DX12Engine::PBRMaterial> goldMat = std::make_shared<DX12Engine::PBRMaterial>();
+		goldMat->SetAllTextures(textureLoader.LoadMaterial(DX12Engine::ResourceManager::GetMaterialPath("hammered-gold-ue")));
+		m_GameContext.LoadMaterial("Gold", goldMat);
+
+		std::shared_ptr<DX12Engine::PBRMaterial> concreteMat = std::make_shared<DX12Engine::PBRMaterial>();
+		concreteMat->SetAllTextures(textureLoader.LoadMaterial(DX12Engine::ResourceManager::GetMaterialPath("clean-concrete-ue")));
+		m_GameContext.LoadMaterial("Concrete", concreteMat);
+
+		std::shared_ptr<DX12Engine::PBRMaterial> metalMat = std::make_shared<DX12Engine::PBRMaterial>();
+		metalMat->SetAllTextures(textureLoader.LoadMaterial(DX12Engine::ResourceManager::GetMaterialPath("worn-shiny-metal-ue")));
+		m_GameContext.LoadMaterial("Metal", metalMat);
 
 		DX12Engine::ModelLoader modelLoader;
 		DX12Engine::Mesh cubeMesh = modelLoader.LoadObj(DX12Engine::ResourceManager::GetModelPath("cube.obj"));
-		m_BrickMeshes["Cube"] = std::make_shared<DX12Engine::Mesh>(cubeMesh);
+		m_GameContext.LoadMesh("Cube", std::make_shared<DX12Engine::Mesh>(cubeMesh));
 
 		SpawnBrick({ 0.0f, 0.0f, 0.0f });
 	}
@@ -60,11 +71,11 @@ namespace BrickBuilder
 	void SandboxScene::SpawnBrick(DirectX::XMVECTOR position)
 	{
 		std::unique_ptr<DX12Engine::GameObject> cube = std::make_unique<DX12Engine::GameObject>();
-		cube->SetMesh(m_BrickMeshes["Cube"]);
+		cube->SetMesh(m_GameContext.GetMesh("Cube"));
 		cube->Move(m_Grid->AlignToGrid(position));
 		cube->Move({ 0.0f, 1.0f, 0.0f });
 		DX12Engine::RenderComponent* cubeRenderComp = cube->CreateComponent<DX12Engine::RenderComponent>();
-		cubeRenderComp->SetMaterial(m_BrickMaterials["Cube"]);
+		cubeRenderComp->SetMaterial(m_GameContext.GetCurrentMaterial());
 		m_SceneObjects.Add("Cube_" + std::to_string(m_BrickCount), std::move(cube));
 		m_BrickCount++;
 	}
